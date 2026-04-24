@@ -152,12 +152,24 @@ const CPF = () => {
                   placeholder="000.000.000-00"
                   maxLength={14}
                   value={cpf}
-                  onChange={(e) => setCpf(formatCPF(e.target.value))}
+                  aria-invalid={!!showError}
+                  aria-describedby={showError ? "cpf-error" : undefined}
+                  onChange={(e) => {
+                    const v = formatCPF(e.target.value);
+                    setCpf(v);
+                    if (touched) setError(validate(v));
+                  }}
+                  onBlur={(e) => {
+                    setTouched(true);
+                    setError(validate(cpf));
+                    e.currentTarget.style.borderColor = showError ? "#DC2626" : "#D1D5DB";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                   style={{
                     width: "100%",
                     padding: "16px 16px",
                     borderRadius: 12,
-                    border: "1px solid #D1D5DB",
+                    border: `1px solid ${showError ? "#DC2626" : "#D1D5DB"}`,
                     background: "#FFFFFF",
                     fontSize: 16,
                     fontWeight: 500,
@@ -166,14 +178,26 @@ const CPF = () => {
                     color: "#111827",
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "#2563EB";
-                    e.currentTarget.style.boxShadow = "0 0 0 2px rgba(37,99,235,0.2)";
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "#D1D5DB";
-                    e.currentTarget.style.boxShadow = "none";
+                    const color = showError ? "#DC2626" : "#2563EB";
+                    const ring = showError ? "rgba(220,38,38,0.2)" : "rgba(37,99,235,0.2)";
+                    e.currentTarget.style.borderColor = color;
+                    e.currentTarget.style.boxShadow = `0 0 0 2px ${ring}`;
                   }}
                 />
+                {showError && (
+                  <p
+                    id="cpf-error"
+                    role="alert"
+                    style={{
+                      fontSize: 13,
+                      color: "#DC2626",
+                      fontWeight: 500,
+                      marginTop: 2,
+                    }}
+                  >
+                    {error}
+                  </p>
+                )}
               </div>
 
               <button
