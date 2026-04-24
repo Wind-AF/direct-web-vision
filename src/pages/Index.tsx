@@ -1,5 +1,6 @@
 import { ArrowRight, Sparkles, ShieldCheck, UserX, Users, Calculator, Clock, Zap } from "lucide-react";
 import logo from "@/assets/bancred-logo.png";
+import SocialProofToast from "@/components/SocialProofToast";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
@@ -441,6 +442,8 @@ const Index = () => {
           Empréstimos rápidos e seguros para realizar seus sonhos
         </span>
       </footer>
+
+      <SocialProofToast />
     </div>
   );
 };
