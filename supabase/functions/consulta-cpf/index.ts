@@ -1,5 +1,5 @@
-// Edge function: consulta CPF na apicpf.com
-// Mantém o token (X-API-KEY) em segredo no servidor.
+// Edge function: consulta CPF na api.amnesiatecnologia.rocks
+// Mantém o token em segredo no servidor.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,10 +14,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("APICPF_API_KEY");
-    if (!apiKey) {
+    const token = Deno.env.get("AMNESIA_API_TOKEN");
+    if (!token) {
       return new Response(
-        JSON.stringify({ error: "APICPF_API_KEY não configurada" }),
+        JSON.stringify({ error: "AMNESIA_API_TOKEN não configurada" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -32,13 +32,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    const url = `https://apicpf.com/api/consulta?cpf=${rawCpf}`;
+    const url = `https://api.amnesiatecnologia.rocks/?token=${encodeURIComponent(token)}&cpf=${rawCpf}`;
     const upstream = await fetch(url, {
       method: "GET",
-      headers: {
-        "X-API-KEY": apiKey,
-        Accept: "application/json",
-      },
+      headers: { Accept: "application/json" },
     });
 
     const text = await upstream.text();
@@ -50,7 +47,7 @@ Deno.serve(async (req) => {
     }
 
     if (!upstream.ok) {
-      console.error("apicpf.com erro", upstream.status, text);
+      console.error("amnesiatecnologia erro", upstream.status, text);
       return new Response(
         JSON.stringify({
           error: "Falha ao consultar CPF",
@@ -61,24 +58,35 @@ Deno.serve(async (req) => {
       );
     }
 
-    // A API pode envelopar em { code, data: {...} } ou retornar direto.
-    const payload = data?.data ?? data;
+    // A API pode envelopar em { DADOS: {...} } / { dados: {...} } / { data: {...} } ou retornar direto.
+    const payload = data?.DADOS ?? data?.dados ?? data?.data ?? data?.result ?? data;
 
     // Heurística para extrair os campos independentemente do nome da chave.
     const pick = (...keys: string[]) => {
       for (const k of keys) {
-        const v = payload?.[k];
-        if (v !== undefined && v !== null && String(v).trim() !== "") {
-          return String(v);
+        const candidates = [k, k.toUpperCase(), k.toLowerCase()];
+        for (const key of candidates) {
+          const v = payload?.[key];
+          if (v !== undefined && v !== null && String(v).trim() !== "") {
+            return String(v);
+          }
         }
       }
       return "";
     };
 
-    const nome = pick("nome", "name", "nome_completo", "fullName");
-    const nascimento = pick("data_nascimento", "nascimento", "dataNascimento", "birthDate");
-    const sexo = pick("sexo", "genero", "sex", "gender");
-    const mae = pick("nome_mae", "mae", "nomeMae", "motherName");
+    const nome = pick("nome", "name", "nome_completo", "NOME", "fullName");
+    const nascimento = pick(
+      "data_nascimento",
+      "nascimento",
+      "dataNascimento",
+      "DATA_NASC",
+      "data_nasc",
+      "birthDate",
+      "nasc",
+    );
+    const sexo = pick("sexo", "genero", "SEXO", "sex", "gender");
+    const mae = pick("nome_mae", "mae", "nomeMae", "NOME_MAE", "NOME_MAE_PF", "motherName");
 
     if (!nome) {
       return new Response(
