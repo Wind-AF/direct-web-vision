@@ -170,11 +170,12 @@ const Saque = () => {
                 <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, maxHeight: 200, overflowY: "auto", zIndex: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}>
                   {filtrados.map((b) => (
                     <div
-                      key={b}
-                      onMouseDown={() => { setBanco(b); setShowBancos(false); }}
-                      style={{ padding: "10px 14px", fontSize: 14, color: "#111827", cursor: "pointer", borderBottom: "1px solid #F3F4F6" }}
+                      key={`${b.codigo}-${b.nome}`}
+                      onMouseDown={() => { setBanco(b.nome); setShowBancos(false); }}
+                      style={{ padding: "10px 14px", fontSize: 14, color: "#111827", cursor: "pointer", borderBottom: "1px solid #F3F4F6", display: "flex", alignItems: "center", gap: 14 }}
                     >
-                      {b}
+                      <span style={{ color: "#6B7280", fontVariantNumeric: "tabular-nums", minWidth: 36, fontSize: 13 }}>{b.codigo}</span>
+                      <span>{b.nome}</span>
                     </div>
                   ))}
                 </div>
