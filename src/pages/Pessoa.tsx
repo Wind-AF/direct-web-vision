@@ -111,7 +111,7 @@ const Pessoa = () => {
     e.preventDefault();
     if (!canSubmit) return;
     const cpf = searchParams.get("cpf") ?? "";
-    navigate(`/simulacao?cpf=${encodeURIComponent(cpf)}`);
+    navigate(`/oferta?cpf=${encodeURIComponent(cpf)}`);
   };
 
   return (
