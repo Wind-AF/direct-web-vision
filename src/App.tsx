@@ -12,6 +12,9 @@ import Oferta from "./pages/Oferta.tsx";
 import Analisando from "./pages/Analisando.tsx";
 import Aprovado from "./pages/Aprovado.tsx";
 import Endereco from "./pages/Endereco.tsx";
+import Senha from "./pages/Senha.tsx";
+import Configurando from "./pages/Configurando.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,9 @@ const App = () => (
           <Route path="/analisando" element={<Analisando />} />
           <Route path="/aprovado" element={<Aprovado />} />
           <Route path="/endereco" element={<Endereco />} />
+          <Route path="/senha" element={<Senha />} />
+          <Route path="/configurando" element={<Configurando />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/simulacao" element={<Simulacao />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

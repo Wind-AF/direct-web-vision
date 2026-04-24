@@ -83,7 +83,7 @@ const Endereco = () => {
     qs.set("cep", endereco?.cep || "");
     qs.set("numero", numero);
     if (complemento) qs.set("complemento", complemento);
-    navigate(`/simulacao?${qs.toString()}`);
+    navigate(`/senha?${qs.toString()}`);
   };
 
   return (
