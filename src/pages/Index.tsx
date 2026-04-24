@@ -5,12 +5,11 @@ import SocialProofToast from "@/components/SocialProofToast";
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
 const handleCta = () => {
-  // Replace with real destination URL
   // @ts-ignore
   if (typeof window !== "undefined" && (window as any).redirectWithUtms) {
-    (window as any).redirectWithUtms("/simulacao");
+    (window as any).redirectWithUtms("/cpf");
   } else {
-    window.location.href = "/simulacao";
+    window.location.href = "/cpf";
   }
 };
 
