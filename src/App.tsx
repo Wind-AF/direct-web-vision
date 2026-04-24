@@ -15,6 +15,9 @@ import Endereco from "./pages/Endereco.tsx";
 import Senha from "./pages/Senha.tsx";
 import Configurando from "./pages/Configurando.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import Saque from "./pages/Saque.tsx";
+import SaqueConfirmar from "./pages/SaqueConfirmar.tsx";
+import Garantia from "./pages/Garantia.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -37,6 +40,9 @@ const App = () => (
           <Route path="/senha" element={<Senha />} />
           <Route path="/configurando" element={<Configurando />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/saque" element={<Saque />} />
+          <Route path="/saque/confirmar" element={<SaqueConfirmar />} />
+          <Route path="/garantia" element={<Garantia />} />
           <Route path="/simulacao" element={<Simulacao />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
