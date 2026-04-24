@@ -387,7 +387,7 @@ const Up1 = () => {
             {pixLoading || !pix ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 0" }}>
                 <Loader2 size={42} color="#1C68E3" style={{ animation: "spin 1s linear infinite" }} />
-                <div style={{ marginTop: 18, color: "#6B7280", fontSize: 14 }}>Gerando seu código PIX...</div>
+                <div style={{ marginTop: 18, color: "#6B7280", fontSize: 14 }}>{pixError ? pixError : "Gerando seu código PIX..."}</div>
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
               </div>
             ) : (
