@@ -267,7 +267,7 @@ const Pagamento = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setShowPix(false)}
+                onClick={closePix}
                 aria-label="Fechar"
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "#6B7280" }}
               >
@@ -311,10 +311,12 @@ const Pagamento = () => {
               </div>
             </div>
 
-            {pixLoading ? (
+            {pixLoading || !pix ? (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 0" }}>
                 <Loader2 size={42} color="#1C68E3" style={{ animation: "spin 1s linear infinite" }} />
-                <div style={{ marginTop: 18, color: "#6B7280", fontSize: 14 }}>Gerando seu código PIX...</div>
+                <div style={{ marginTop: 18, color: "#6B7280", fontSize: 14 }}>
+                  {pixError ? pixError : "Gerando seu código PIX..."}
+                </div>
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
               </div>
             ) : (
@@ -331,7 +333,7 @@ const Pagamento = () => {
                   </div>
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
-                      src={qrUrl}
+                      src={pix.qr_image}
                       alt="QR Code PIX"
                       width={240}
                       height={240}
@@ -355,7 +357,7 @@ const Pagamento = () => {
                     marginBottom: 12,
                   }}
                 >
-                  {PIX_PAYLOAD}
+                  {pix.qr_code}
                 </div>
 
                 <button
