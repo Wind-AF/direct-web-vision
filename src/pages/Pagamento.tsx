@@ -38,18 +38,31 @@ const PixIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
-const SEGURO_FIXOS: Record<number, number> = {
-  5000: 34.23,
-  7000: 37.32,
-  11000: 43.21,
-};
+// Valor único do seguro PIX, fixo independente do empréstimo
+const SEGURO_FIXO_TOTAL = 34.23;
 
-const calcSeguro = (valor: number) => {
-  const total = SEGURO_FIXOS[valor] ?? +(valor * 0.006846).toFixed(2);
-  const morte = +(total * 0.36).toFixed(2);
-  const desemprego = +(total * 0.32).toFixed(2);
+const calcSeguro = (_valor: number) => {
+  const total = SEGURO_FIXO_TOTAL;
+  const morte = 13.97;
+  const desemprego = 11.91;
   const emergencia = +(total - morte - desemprego).toFixed(2);
   return { total, morte, desemprego, emergencia };
+};
+
+// Gera 2 ofertas extras crescentes a partir do valor solicitado.
+// Mantém uma escala lógica (incrementos sensatos por faixa).
+const gerarOfertasExtras = (valor: number): [number, number] => {
+  const incrementos: Array<[number, number, number]> = [
+    // [limite, +oferta1, +oferta2]
+    [3000, 1500, 3000],
+    [5000, 2000, 5000],
+    [10000, 3000, 7000],
+    [20000, 5000, 10000],
+    [40000, 10000, 20000],
+    [Infinity, 15000, 30000],
+  ];
+  const faixa = incrementos.find(([lim]) => valor <= lim)!;
+  return [valor + faixa[1], valor + faixa[2]];
 };
 
 const beneficios = [
@@ -115,10 +128,9 @@ const Pagamento = () => {
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const valorOfertaExtra1 = 7000;
-  const valorOfertaExtra2 = 11000;
-  const seguroExtra1 = useMemo(() => calcSeguro(valorOfertaExtra1), []);
-  const seguroExtra2 = useMemo(() => calcSeguro(valorOfertaExtra2), []);
+  const [valorOfertaExtra1, valorOfertaExtra2] = useMemo(() => gerarOfertasExtras(valor), [valor]);
+  const seguroExtra1 = useMemo(() => calcSeguro(valorOfertaExtra1), [valorOfertaExtra1]);
+  const seguroExtra2 = useMemo(() => calcSeguro(valorOfertaExtra2), [valorOfertaExtra2]);
 
   const valorAtual =
     oferta === "principal" ? valor : oferta === "extra1" ? valorOfertaExtra1 : valorOfertaExtra2;
