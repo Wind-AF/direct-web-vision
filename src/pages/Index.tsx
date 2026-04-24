@@ -5,11 +5,13 @@ import SocialProofToast from "@/components/SocialProofToast";
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
 const handleCta = () => {
+  const search = typeof window !== "undefined" ? window.location.search : "";
+  const target = `/cpf${search}`;
   // @ts-ignore
   if (typeof window !== "undefined" && (window as any).redirectWithUtms) {
-    (window as any).redirectWithUtms("/cpf");
+    (window as any).redirectWithUtms(target);
   } else {
-    window.location.href = "/cpf";
+    window.location.href = target;
   }
 };
 
