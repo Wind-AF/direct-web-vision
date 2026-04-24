@@ -5,111 +5,95 @@ import logo from "@/assets/bancred-logo.png";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
-type StepState = "pending" | "loading" | "done";
+type StepState = "loading" | "done";
 
-type StepProps = {
-  label: string;
-  state: StepState;
-};
-
-const Step = ({ label, state }: StepProps) => {
+const Step = ({ label, state }: { label: string; state: StepState }) => {
   const isDone = state === "done";
-  const isLoading = state === "loading";
-  const isPending = state === "pending";
 
-  const bg = isDone ? "#ECFDF5" : isLoading ? "#FFFFFF" : "#F9FAFB";
-  const border = isDone ? "#A7F3D0" : isLoading ? "#FFFFFF" : "#E5E7EB";
-  const textColor = isDone ? "#047857" : isLoading ? "#1C68E3" : "#9CA3AF";
-  const iconBg = isDone ? "#10B981" : isLoading ? "#1C68E3" : "#E5E7EB";
-  const iconColor = isDone || isLoading ? "#FFFFFF" : "#9CA3AF";
-  const dotColor = isDone ? "#10B981" : isLoading ? "#1C68E3" : "#D1D5DB";
+  // Loading = azul; Done = verde
+  const cardBg = isDone ? "#F0FDF4" : "#EFF6FF";
+  const cardBorder = isDone ? "#BBF7D0" : "#BFDBFE";
+  const iconBg = isDone ? "#22C55E" : "#3B82F6";
+  const pingBg = isDone ? "#4ADE80" : "#60A5FA";
+  const textColor = isDone ? "#15803D" : "#1D4ED8";
+  const dotColor = isDone ? "#4ADE80" : "#60A5FA";
 
   return (
     <div
       style={{
-        background: bg,
-        border: `1px solid ${border}`,
-        borderRadius: 14,
-        padding: "14px 16px",
         display: "flex",
         alignItems: "center",
-        gap: 14,
-        boxShadow: isLoading ? "0 6px 18px rgba(28,104,227,0.10)" : "none",
-        transition: "background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease",
-        opacity: isPending ? 0.85 : 1,
+        gap: 16,
+        padding: 12,
+        borderRadius: 12,
+        background: cardBg,
+        border: `1px solid ${cardBorder}`,
+        transition: "all 0.5s ease",
       }}
     >
-      <span
+      {/* Icon w/ ping */}
+      <div
         style={{
-          width: 36,
-          height: 36,
+          position: "relative",
+          width: 40,
+          height: 40,
           borderRadius: "50%",
           background: iconBg,
-          color: iconColor,
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.12)",
           flexShrink: 0,
-          transition: "background 0.4s ease",
         }}
       >
         {isDone ? (
-          <Check width={18} height={18} strokeWidth={3} />
-        ) : isLoading ? (
-          <Loader2 width={18} height={18} style={{ animation: "bc-spin 0.9s linear infinite" }} />
+          <Check width={20} height={20} color="#FFFFFF" strokeWidth={2.5} />
         ) : (
-          <Loader2 width={18} height={18} />
+          <Loader2
+            width={20}
+            height={20}
+            color="#FFFFFF"
+            style={{ animation: "bc-spin 1s linear infinite" }}
+          />
         )}
-      </span>
-
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
+        <span
           style={{
-            fontSize: 15,
-            fontWeight: 700,
+            position: "absolute",
+            inset: 0,
+            borderRadius: "50%",
+            background: pingBg,
+            opacity: 0.75,
+            animation: "bc-ping 1.5s cubic-bezier(0,0,0.2,1) infinite",
+          }}
+        />
+      </div>
+
+      {/* Label */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p
+          style={{
+            fontWeight: 500,
             color: textColor,
+            fontSize: 14,
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            transition: "color 0.4s ease",
+            gap: 6,
           }}
         >
           <span>{label}</span>
-          {isDone && <Check width={14} height={14} strokeWidth={3} />}
-          {isLoading && <span style={{ color: "#1C68E3" }}>...</span>}
-        </div>
-
-        {isLoading && (
-          <div
-            style={{
-              marginTop: 8,
-              height: 4,
-              borderRadius: 999,
-              background: "#E0EAFB",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                width: "40%",
-                height: "100%",
-                borderRadius: 999,
-                background: "#1C68E3",
-                animation: "bc-progress 1.4s ease-in-out infinite",
-              }}
-            />
-          </div>
-        )}
+          {isDone && <span style={{ color: "#16A34A" }}>✓</span>}
+        </p>
       </div>
 
-      <span
+      {/* Right dot */}
+      <div
         style={{
           width: 8,
           height: 8,
           borderRadius: "50%",
           background: dotColor,
+          animation: "bc-pulse 2s ease-in-out infinite",
           flexShrink: 0,
-          transition: "background 0.4s ease",
         }}
       />
     </div>
@@ -120,22 +104,15 @@ const Analise = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [step1, setStep1] = useState<StepState>("loading");
-  const [step2, setStep2] = useState<StepState>("pending");
+  const [step2, setStep2] = useState<StepState>("loading");
 
   useEffect(() => {
-    const t1 = window.setTimeout(() => {
-      setStep1("done");
-      setStep2("loading");
-    }, 1800);
-
-    const t2 = window.setTimeout(() => {
-      setStep2("done");
-    }, 3600);
-
+    const t1 = window.setTimeout(() => setStep1("done"), 1500);
+    const t2 = window.setTimeout(() => setStep2("done"), 3000);
     const t3 = window.setTimeout(() => {
       const cpf = searchParams.get("cpf") ?? "";
       navigate(`/pessoa${cpf ? `?cpf=${encodeURIComponent(cpf)}` : ""}`, { replace: true });
-    }, 4200);
+    }, 3800);
 
     return () => {
       window.clearTimeout(t1);
@@ -158,14 +135,17 @@ const Analise = () => {
     >
       <style>{`
         @keyframes bc-spin { to { transform: rotate(360deg); } }
-        @keyframes bc-progress {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(350%); }
+        @keyframes bc-ping {
+          75%, 100% { transform: scale(2); opacity: 0; }
         }
-        @keyframes bc-pulse-ring {
-          0% { transform: scale(0.95); opacity: 0.6; }
-          70% { transform: scale(1.25); opacity: 0; }
-          100% { transform: scale(1.25); opacity: 0; }
+        @keyframes bc-pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes bc-spin-slow { to { transform: rotate(360deg); } }
+        @keyframes bc-bg-pulse {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.35; }
         }
       `}</style>
 
@@ -173,9 +153,9 @@ const Analise = () => {
         style={{
           background: "#FFFFFF",
           borderBottom: "1px solid #E5E7EB",
-          padding: "14px 16px",
+          padding: "16px 16px",
           textAlign: "center",
-          paddingTop: "calc(14px + env(safe-area-inset-top))",
+          paddingTop: "calc(16px + env(safe-area-inset-top))",
         }}
       >
         <img
@@ -190,103 +170,148 @@ const Analise = () => {
           flex: 1,
           background: "#F9FAFB",
           padding: "48px 16px",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "center",
         }}
       >
-        <div style={{ width: "100%", maxWidth: 448 }}>
+        <div style={{ maxWidth: 448, margin: "0 auto" }}>
+          {/* Card with gradient */}
           <div
             style={{
-              background: "linear-gradient(180deg, #EFF4FE 0%, #E6EEFD 100%)",
-              border: "1px solid #DCE6FB",
-              borderRadius: 18,
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: 16,
+              background: "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
               padding: 24,
-              boxShadow: "0 10px 30px -12px rgba(28,104,227,0.18)",
+              border: "1px solid #BFDBFE",
+              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
             }}
           >
-            {/* Avatar */}
-            <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <div
-                style={{
-                  position: "relative",
-                  width: 72,
-                  height: 72,
-                  margin: "0 auto 14px",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "50%",
-                    background: "#BFDBFE",
-                    animation: "bc-pulse-ring 1.8s ease-out infinite",
-                  }}
-                />
+            {/* Animated gradient overlay */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.2,
+                pointerEvents: "none",
+                background: "linear-gradient(90deg, rgba(96,165,250,0.2), rgba(37,99,235,0.2))",
+                animation: "bc-bg-pulse 2s ease-in-out infinite",
+              }}
+            />
+
+            <div style={{ position: "relative", zIndex: 1 }}>
+              {/* Avatar */}
+              <div style={{ textAlign: "center", marginBottom: 24 }}>
                 <div
                   style={{
                     position: "relative",
-                    width: 72,
-                    height: 72,
-                    background: "#FFFFFF",
-                    border: "2px solid #BFDBFE",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    width: 64,
+                    height: 64,
+                    margin: "0 auto 16px",
                   }}
                 >
-                  <UserCheck width={34} height={34} color="#1C68E3" />
+                  {/* Spinning gradient ring */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "50%",
+                      background: "linear-gradient(45deg, #3B82F6, #1D4ED8)",
+                      animation: "bc-spin-slow 2s linear infinite",
+                    }}
+                  />
+                  {/* White inner circle with icon */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 4,
+                      borderRadius: "50%",
+                      background: "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <UserCheck
+                      width={24}
+                      height={24}
+                      color="#2563EB"
+                      style={{ animation: "bc-pulse 2s ease-in-out infinite" }}
+                    />
+                  </div>
+                  {/* Top ping dot */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: -4,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 12,
+                      height: 12,
+                      background: "#60A5FA",
+                      borderRadius: "50%",
+                      animation: "bc-ping 1.5s cubic-bezier(0,0,0.2,1) infinite",
+                    }}
+                  />
+                  {/* Bottom ping dot */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: -4,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 8,
+                      height: 8,
+                      background: "#3B82F6",
+                      borderRadius: "50%",
+                      animation: "bc-ping 1.5s cubic-bezier(0,0,0.2,1) infinite",
+                      animationDelay: "0.5s",
+                    }}
+                  />
                 </div>
-              </div>
-              <h1
-                style={{
-                  fontSize: 22,
-                  fontWeight: 700,
-                  color: "#0F172A",
-                  letterSpacing: -0.4,
-                  marginBottom: 6,
-                }}
-              >
-                Analisando seus dados
-              </h1>
-              <p style={{ color: "#64748B", fontSize: 14 }}>Processando informações...</p>
-            </div>
 
-            {/* Steps */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 18 }}>
-              <Step label="Consultando banco de dados" state={step1} />
-              <Step label="Finalizando verificação" state={step2} />
-            </div>
-
-            {/* Secure connection badge */}
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  background: "#FFFFFF",
-                  border: "1px solid #E5E7EB",
-                  borderRadius: 999,
-                  padding: "6px 14px",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#111827",
-                  boxShadow: "0 1px 2px rgba(17,24,39,0.04)",
-                }}
-              >
-                <span
+                <h3
                   style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "#10B981",
-                    boxShadow: "0 0 0 3px rgba(16,185,129,0.18)",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#1F2937",
+                    marginBottom: 8,
                   }}
-                />
-                Conexão segura ativa
+                >
+                  Analisando seus dados
+                </h3>
+                <p style={{ fontSize: 14, color: "#4B5563" }}>Processando informações...</p>
+              </div>
+
+              {/* Steps */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <Step label="Consultando banco de dados" state={step1} />
+                <Step label="Finalizando verificação" state={step2} />
+              </div>
+
+              {/* Secure connection badge */}
+              <div style={{ marginTop: 24, textAlign: "center" }}>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontSize: 12,
+                    color: "#4B5563",
+                    background: "rgba(255,255,255,0.6)",
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      background: "#22C55E",
+                      borderRadius: "50%",
+                      animation: "bc-pulse 2s ease-in-out infinite",
+                    }}
+                  />
+                  <span>Conexão segura ativa</span>
+                </div>
               </div>
             </div>
           </div>
