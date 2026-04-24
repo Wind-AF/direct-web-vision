@@ -132,7 +132,7 @@ const Oferta = () => {
   const [motivo, setMotivo] = useState<string | null>(null);
   const [ocupacao, setOcupacao] = useState<string | null>(null);
   const [rendaText, setRendaText] = useState("");
-  const [diaRecebimento, setDiaRecebimento] = useState("25");
+  const [diaRecebimento, setDiaRecebimento] = useState("");
   const [situacaoCpf, setSituacaoCpf] = useState<"pendencias" | "limpo" | null>(null);
   const [valor, setValor] = useState(5000);
   const [parcelas, setParcelas] = useState<number | null>(72);
