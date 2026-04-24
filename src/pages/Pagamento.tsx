@@ -38,8 +38,14 @@ const PixIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
+const SEGURO_FIXOS: Record<number, number> = {
+  5000: 34.23,
+  7000: 37.32,
+  11000: 43.21,
+};
+
 const calcSeguro = (valor: number) => {
-  const total = +(valor * 0.006846).toFixed(2);
+  const total = SEGURO_FIXOS[valor] ?? +(valor * 0.006846).toFixed(2);
   const morte = +(total * 0.36).toFixed(2);
   const desemprego = +(total * 0.32).toFixed(2);
   const emergencia = +(total - morte - desemprego).toFixed(2);
@@ -227,8 +233,8 @@ const Pagamento = () => {
   return (
     <div style={{ minHeight: "100dvh", background: "#F4F4F7", fontFamily: fontStack, color: "#111827", paddingBottom: showPix ? 0 : 32 }}>
       {/* Header Bancred */}
-      <header style={{ background: "#fff", padding: "16px", textAlign: "center", borderBottom: "1px solid #E5E7EB" }}>
-        <img src={bancredLogo} alt="Bancred" style={{ height: 30, display: "inline-block" }} />
+      <header style={{ background: "#fff", padding: "18px 16px", textAlign: "center", borderBottom: "1px solid #E5E7EB" }}>
+        <img src={bancredLogo} alt="Bancred" style={{ height: 56, display: "inline-block" }} />
       </header>
 
       {/* Banner Stellanz */}
