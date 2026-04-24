@@ -24,7 +24,7 @@ const CPF = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!isValid) return;
-    navigate(`/pessoa?cpf=${encodeURIComponent(cpf)}`);
+    navigate(`/analise?cpf=${encodeURIComponent(cpf)}`);
   };
 
   return (
