@@ -36,13 +36,29 @@ const isValidCPF = (raw: string) => {
 
 const CPF = () => {
   const [cpf, setCpf] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState(false);
   const navigate = useNavigate();
 
-  const isValid = cpf.replace(/\D/g, "").length === 11;
+  const digitsLen = cpf.replace(/\D/g, "").length;
+  const isComplete = digitsLen === 11;
+  const isValid = isComplete && isValidCPF(cpf);
+
+  const validate = (value: string): string | null => {
+    const len = value.replace(/\D/g, "").length;
+    if (len === 0) return "Informe seu CPF.";
+    if (len < 11) return "CPF incompleto. Digite os 11 números.";
+    if (!isValidCPF(value)) return "CPF inválido. Verifique os números digitados.";
+    return null;
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!isValid) return;
+    setTouched(true);
+    const err = validate(cpf);
+    setError(err);
+    if (err) return;
+
     const incoming = new URLSearchParams(window.location.search);
     const qs = new URLSearchParams();
     qs.set("cpf", cpf);
@@ -50,6 +66,9 @@ const CPF = () => {
     if (nome) qs.set("nome", nome);
     navigate(`/analise?${qs.toString()}`);
   };
+
+  // Mostra erro só depois que o usuário interagiu (touched) ou tentou enviar
+  const showError = touched && error;
 
   return (
     <div
