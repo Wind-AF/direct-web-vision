@@ -33,8 +33,6 @@ const PixIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
-const PIX_PAYLOAD =
-  "00020101021226800014br.gov.bcb.pix2558qrcode.mkip.com.br/v1/iof-bancred-up15204000053039865802BR5915TTKBRASILSEGURO6008SAOPAULO62070503***6304A1B2";
 
 const Up1 = () => {
   const [params] = useSearchParams();
@@ -269,7 +267,7 @@ const Up1 = () => {
 
         <button
           type="button"
-          onClick={() => setShowPix(true)}
+          onClick={openPix}
           style={{
             width: "100%",
             padding: "15px 20px",
