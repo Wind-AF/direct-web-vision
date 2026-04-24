@@ -111,7 +111,12 @@ const Analise = () => {
     const t2 = window.setTimeout(() => setStep2("done"), 3000);
     const t3 = window.setTimeout(() => {
       const cpf = searchParams.get("cpf") ?? "";
-      navigate(`/pessoa${cpf ? `?cpf=${encodeURIComponent(cpf)}` : ""}`, { replace: true });
+      const nome = searchParams.get("nome") ?? "";
+      const qs = new URLSearchParams();
+      if (cpf) qs.set("cpf", cpf);
+      if (nome) qs.set("nome", nome);
+      const q = qs.toString();
+      navigate(`/pessoa${q ? `?${q}` : ""}`, { replace: true });
     }, 3800);
 
     return () => {
