@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Wallet, Clock, Volume2, AlertCircle, ShieldCheck, Award, Car, CheckCircle2, Info } from "lucide-react";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -9,13 +9,17 @@ const formatBRL = (n: number) =>
 
 const Garantia = () => {
   const [params] = useSearchParams();
+  const navigate = useNavigate();
   const valor = Number(params.get("valor") || 5000);
   const [selected, setSelected] = useState<"seguro" | "bem" | null>(null);
 
   const handleContinue = () => {
     if (!selected) return;
-    // Future: redirect to payment / scheduling
-    alert(selected === "seguro" ? "Seguindo com Seguro Prestamista" : "Agendando atendimento presencial");
+    if (selected === "seguro") {
+      navigate(`/pagamento?${params.toString()}`);
+    } else {
+      alert("Em breve: agendamento de atendimento presencial");
+    }
   };
 
   const optionStyle = (key: "seguro" | "bem") => ({
