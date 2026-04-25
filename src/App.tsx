@@ -20,6 +20,7 @@ import SaqueConfirmar from "./pages/SaqueConfirmar.tsx";
 import Garantia from "./pages/Garantia.tsx";
 import Pagamento from "./pages/Pagamento.tsx";
 import Up1 from "./pages/Up1.tsx";
+import Up2 from "./pages/Up2.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/garantia" element={<Garantia />} />
           <Route path="/pagamento" element={<Pagamento />} />
           <Route path="/up1" element={<Up1 />} />
+          <Route path="/up2" element={<Up2 />} />
           <Route path="/simulacao" element={<Simulacao />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

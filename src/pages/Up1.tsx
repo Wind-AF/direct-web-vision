@@ -47,8 +47,7 @@ const Up1 = () => {
   const [copied, setCopied] = useState(false);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
-    // Próximo upsell (a definir): por enquanto continua na mesma tela
-    // navigate(`/up2?${params.toString()}`);
+    navigate(`/up2?${params.toString()}`);
   });
 
   const openPix = async () => {
