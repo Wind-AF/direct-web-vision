@@ -61,7 +61,7 @@ export function useParadisePix(onApproved?: () => void) {
 
     // 🧪 MODO DE TESTE: pula a geração de PIX e avança automaticamente.
     // Para reativar o pagamento real, defina TEST_MODE = false.
-    const TEST_MODE = true;
+    const TEST_MODE = false;
     if (TEST_MODE) {
       try {
         const fakeCode = `TEST-${stage}-${Date.now()}`;
