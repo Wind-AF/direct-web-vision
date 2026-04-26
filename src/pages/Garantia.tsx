@@ -18,7 +18,7 @@ const Garantia = () => {
     if (selected === "seguro") {
       navigate(`/pagamento?${params.toString()}`);
     } else {
-      alert("Em breve: agendamento de atendimento presencial");
+      navigate(`/agendamento?${params.toString()}`);
     }
   };
 
