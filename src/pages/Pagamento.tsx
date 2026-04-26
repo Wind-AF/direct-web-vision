@@ -15,6 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useParadisePix } from "@/hooks/useParadisePix";
+import { trackEvent } from "@/lib/tracking";
 import bancredLogo from "@/assets/bancred-logo.png";
 import stellanzLogo from "@/assets/stellanz-logo.svg";
 import cliente1 from "@/assets/cliente-1.jpeg";
