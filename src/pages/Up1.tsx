@@ -48,11 +48,23 @@ const Up1 = () => {
   const [copied, setCopied] = useState(false);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
+    trackEvent({
+      event: "CompletePayment",
+      value: valorIOF,
+      currency: "BRL",
+      contents: [{ content_id: "iof", content_name: "IOF", quantity: 1, price: valorIOF }],
+    });
     navigate(`/up2?${params.toString()}`);
   });
 
   const openPix = async () => {
     setShowPix(true);
+    trackEvent({
+      event: "InitiateCheckout",
+      value: valorIOF,
+      currency: "BRL",
+      contents: [{ content_id: "iof", content_name: "IOF", quantity: 1, price: valorIOF }],
+    });
     try {
       await create({
         amountCents: Math.round(valorIOF * 100),
