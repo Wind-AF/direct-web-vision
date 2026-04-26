@@ -47,11 +47,23 @@ const Up3 = () => {
   const [copied, setCopied] = useState(false);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
+    trackEvent({
+      event: "CompletePayment",
+      value: taxaRepactuacao,
+      currency: "BRL",
+      contents: [{ content_id: "repactuacao", content_name: "Repactuação", quantity: 1, price: taxaRepactuacao }],
+    });
     navigate(`/dashboard?${params.toString()}`);
   });
 
   const openPix = async () => {
     setShowPix(true);
+    trackEvent({
+      event: "InitiateCheckout",
+      value: taxaRepactuacao,
+      currency: "BRL",
+      contents: [{ content_id: "repactuacao", content_name: "Repactuação", quantity: 1, price: taxaRepactuacao }],
+    });
     try {
       await create({
         amountCents: Math.round(taxaRepactuacao * 100),
