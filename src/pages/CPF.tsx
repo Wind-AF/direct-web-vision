@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserCheck, Check } from "lucide-react";
 import logo from "@/assets/bancred-logo.png";
 import SocialProofToast from "@/components/SocialProofToast";
+import { trackEvent } from "@/lib/tracking";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
@@ -64,6 +65,7 @@ const CPF = () => {
     qs.set("cpf", cpf);
     const nome = incoming.get("nome");
     if (nome) qs.set("nome", nome);
+    trackEvent({ event: "Lead", external_id: cpf.replace(/\D/g, "") });
     navigate(`/analise?${qs.toString()}`);
   };
 

