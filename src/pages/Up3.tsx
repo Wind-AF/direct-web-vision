@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import logo from "@/assets/bancred-logo.png";
 import { useParadisePix } from "@/hooks/useParadisePix";
+import { trackEvent } from "@/lib/tracking";
 
 const fontStack = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
