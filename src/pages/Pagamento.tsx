@@ -123,8 +123,8 @@ const Pagamento = () => {
   const [copied, setCopied] = useState(false);
 
   const [valorOfertaExtra1, valorOfertaExtra2] = useMemo(() => gerarOfertasExtras(valor), [valor]);
-  const seguroExtra1 = useMemo(() => calcSeguro(valorOfertaExtra1), [valorOfertaExtra1]);
-  const seguroExtra2 = useMemo(() => calcSeguro(valorOfertaExtra2), [valorOfertaExtra2]);
+  const seguroExtra1 = useMemo(() => calcSeguroFromTotal(SEGURO_EXTRA1), []);
+  const seguroExtra2 = useMemo(() => calcSeguroFromTotal(SEGURO_EXTRA2), []);
 
   const valorAtual =
     oferta === "principal" ? valor : oferta === "extra1" ? valorOfertaExtra1 : valorOfertaExtra2;
