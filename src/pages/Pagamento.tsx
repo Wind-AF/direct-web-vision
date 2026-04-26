@@ -346,7 +346,7 @@ const Pagamento = () => {
 
         <button
           type="button"
-          onClick={openPix}
+          onClick={() => navigate(`/up1?${params.toString()}`)}
           style={{
             width: "100%",
             padding: "16px 20px",
