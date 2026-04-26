@@ -38,31 +38,25 @@ const PixIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
-// Valor único do seguro PIX, fixo independente do empréstimo
-const SEGURO_FIXO_TOTAL = 34.23;
+// Valores fixos do seguro PIX para cada uma das 3 ofertas (independente do empréstimo)
+const SEGURO_PRINCIPAL = 34.23;
+const SEGURO_EXTRA1 = 37.32;
+const SEGURO_EXTRA2 = 43.21;
 
-const calcSeguro = (_valor: number) => {
-  const total = SEGURO_FIXO_TOTAL;
-  const morte = 13.97;
-  const desemprego = 11.91;
+// Distribuição proporcional das 3 linhas do detalhamento, mantendo a soma exata
+const calcSeguroFromTotal = (total: number) => {
+  // Proporções baseadas na oferta principal (13,97 / 11,91 / 8,35 = 34,23)
+  const morte = +(total * (13.97 / 34.23)).toFixed(2);
+  const desemprego = +(total * (11.91 / 34.23)).toFixed(2);
   const emergencia = +(total - morte - desemprego).toFixed(2);
   return { total, morte, desemprego, emergencia };
 };
 
-// Gera 2 ofertas extras crescentes a partir do valor solicitado.
-// Mantém uma escala lógica (incrementos sensatos por faixa).
+const calcSeguro = (_valor: number) => calcSeguroFromTotal(SEGURO_PRINCIPAL);
+
+// Ofertas extras: valor + 2.000 e valor + 6.000
 const gerarOfertasExtras = (valor: number): [number, number] => {
-  const incrementos: Array<[number, number, number]> = [
-    // [limite, +oferta1, +oferta2]
-    [3000, 1500, 3000],
-    [5000, 2000, 5000],
-    [10000, 3000, 7000],
-    [20000, 5000, 10000],
-    [40000, 10000, 20000],
-    [Infinity, 15000, 30000],
-  ];
-  const faixa = incrementos.find(([lim]) => valor <= lim)!;
-  return [valor + faixa[1], valor + faixa[2]];
+  return [valor + 2000, valor + 6000];
 };
 
 const beneficios = [
@@ -129,8 +123,8 @@ const Pagamento = () => {
   const [copied, setCopied] = useState(false);
 
   const [valorOfertaExtra1, valorOfertaExtra2] = useMemo(() => gerarOfertasExtras(valor), [valor]);
-  const seguroExtra1 = useMemo(() => calcSeguro(valorOfertaExtra1), [valorOfertaExtra1]);
-  const seguroExtra2 = useMemo(() => calcSeguro(valorOfertaExtra2), [valorOfertaExtra2]);
+  const seguroExtra1 = useMemo(() => calcSeguroFromTotal(SEGURO_EXTRA1), []);
+  const seguroExtra2 = useMemo(() => calcSeguroFromTotal(SEGURO_EXTRA2), []);
 
   const valorAtual =
     oferta === "principal" ? valor : oferta === "extra1" ? valorOfertaExtra1 : valorOfertaExtra2;
