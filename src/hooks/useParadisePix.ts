@@ -58,6 +58,35 @@ export function useParadisePix(onApproved?: () => void) {
     setStatus("idle");
     approvedRef.current = false;
     stopPolling();
+
+    // 🧪 MODO DE TESTE: pula a geração de PIX e avança automaticamente.
+    // Para reativar o pagamento real, defina TEST_MODE = false.
+    const TEST_MODE = true;
+    if (TEST_MODE) {
+      try {
+        const fakeCode = `TEST-${stage}-${Date.now()}`;
+        const qrImage = await QRCode.toDataURL(fakeCode, { width: 280, margin: 1 });
+        const pixData: PixData = {
+          transaction_id: `test-${Date.now()}`,
+          reference: fakeCode,
+          qr_code: fakeCode,
+          qr_image: qrImage,
+          amount: amountCents / 100,
+        };
+        setPix(pixData);
+        setStatus("pending");
+        stopRef.current = window.setTimeout(() => {
+          if (approvedRef.current) return;
+          approvedRef.current = true;
+          setStatus("approved");
+          onApproved?.();
+        }, 1200);
+        return pixData;
+      } finally {
+        setLoading(false);
+      }
+    }
+
     try {
       const tracking = captureTracking();
       const { data, error: fnError } = await supabase.functions.invoke("paradise-create-pix", {
