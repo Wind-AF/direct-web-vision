@@ -1,1 +1,4 @@
 project_id = "xqmsybnvxcdofyrtdapj"
+
+[functions.tiktok-event]
+verify_jwt = false
