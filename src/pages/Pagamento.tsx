@@ -135,11 +135,23 @@ const Pagamento = () => {
   const parcela = (v: number) => v / 24 * (1 + 0.27);
 
   const { create, reset, pix, loading: pixLoading, error: pixError } = useParadisePix(() => {
+    trackEvent({
+      event: "CompletePayment",
+      value: seguroAtual.total,
+      currency: "BRL",
+      contents: [{ content_id: "seguro", content_name: "Seguro Prestamista", quantity: 1, price: seguroAtual.total }],
+    });
     navigate(`/up1?${params.toString()}`);
   });
 
   const openPix = async () => {
     setShowPix(true);
+    trackEvent({
+      event: "InitiateCheckout",
+      value: seguroAtual.total,
+      currency: "BRL",
+      contents: [{ content_id: "seguro", content_name: "Seguro Prestamista", quantity: 1, price: seguroAtual.total }],
+    });
     try {
       await create({
         amountCents: Math.round(seguroAtual.total * 100),
